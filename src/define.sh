@@ -22,7 +22,11 @@ parseVersion() {
   if [[ "${VERSION}" == \"*\" || "${VERSION}" == \'*\' ]]; then
     VERSION="${VERSION:1:-1}"
   fi
-
+  [ -z "$VERSION" ] && VERSION="k24.04"
+  
+  case "$VERSION,,}" in
+  "kubuntu24.04.1" | "k24.04" | "k24.04.1" )
+  
   [ -z "$VERSION" ] && VERSION="win11"
 
   case "${VERSION,,}" in
