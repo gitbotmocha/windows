@@ -16,8 +16,8 @@ handle_curl_error() {
     8) error "$server_name servers returned a malformed HTTP response!" ;;
     16) error "A problem was detected in the HTTP2 framing layer!" ;;
     22) error "$server_name servers returned a failing HTTP status code!" ;;
-    23) error "Failed at writing Windows media to disk! Out of disk space or permission error?" ;;
-    26) error "Failed to read Windows media from disk!" ;;
+    23) error "Failed at writing Kubuntu media to disk! Out of disk space or permission error?" ;;
+    26) error "Failed to read Kubuntu media from disk!" ;;
     27) error "Ran out of memory during download!" ;;
     28) error "Connection timed out to $server_name server!" ;;
     35) error "SSL connection error from $server_name server!" ;;
@@ -58,7 +58,7 @@ get_agent() {
   return 0
 }
 
-download_windows() {
+download_kubuntu(){
 
   local id="$1"
   local lang="$2"
@@ -88,7 +88,7 @@ download_windows() {
     * ) error "Invalid VERSION specified, value \"$id\" is not recognized!" && return 1 ;;
   esac
 
-  local url="https://www.microsoft.com/en-us/software-download/windows$windows_version"
+  local url="https://www.microsoft.com/en-us/software-download/windows$kubuntu_version"
   [[ "${id,,}" == "win10"* ]] && url+="ISO"
 
   # uuidgen: For MacOS (installed by default) and other systems (e.g. with no /proc) that don't have a kernel interface for generating random UUIDs
@@ -101,7 +101,7 @@ download_windows() {
   # Remove "Accept" header that curl sends by default
   [[ "$DEBUG" == [Yy1]* ]] && echo "Parsing download page: ${url}"
   download_page_html=$(curl --silent --max-time 30 --user-agent "$user_agent" --header "Accept:" --max-filesize 1M --fail --proto =https --tlsv1.2 --http1.1 -- "$url") || {
-    handle_curl_error "$?" "Microsoft"
+    handle_curl_error "$?" "Ubuntu"
     return $?
   }
 
@@ -184,39 +184,10 @@ download_windows_eval() {
   local language=""
   local user_agent=""
   local enterprise_type=""
-  local windows_version=""
+  local kubuntu_version=""
 
   case "${id,,}" in
-    "win11${PLATFORM,,}-enterprise-eval" )
-      enterprise_type="enterprise"
-      windows_version="windows-11-enterprise" ;;
-    "win11${PLATFORM,,}-enterprise-iot-eval" )
-      enterprise_type="iot"
-      windows_version="windows-11-iot-enterprise-ltsc-eval" ;;
-    "win11${PLATFORM,,}-enterprise-ltsc-eval" )
-      enterprise_type="iot"
-      windows_version="windows-11-iot-enterprise-ltsc-eval" ;;
-    "win10${PLATFORM,,}-enterprise-eval" )
-      enterprise_type="enterprise"
-      windows_version="windows-10-enterprise" ;;
-    "win10${PLATFORM,,}-enterprise-ltsc-eval" )
-      enterprise_type="ltsc"
-      windows_version="windows-10-enterprise" ;;
-    "win2025-eval" )
-      enterprise_type="server"
-      windows_version="windows-server-2025" ;;
-    "win2022-eval" )
-      enterprise_type="server"
-      windows_version="windows-server-2022" ;;
-    "win2019-eval" )
-      enterprise_type="server"
-      windows_version="windows-server-2019" ;;
-    "win2016-eval" )
-      enterprise_type="server"
-      windows_version="windows-server-2016" ;;
-    "win2012r2-eval" )
-      enterprise_type="server"
-      windows_version="windows-server-2012-r2" ;;
+    "win11${PLATFORM,,}-enterprise-eval" )   
     * )
       error "Invalid VERSION specified, value \"$id\" is not recognized!" && return 1 ;;
   esac
@@ -226,7 +197,7 @@ download_windows_eval() {
 
   local country="${culture#*-}"
   local iso_download_page_html=""
-  local url="https://www.microsoft.com/en-us/evalcenter/download-$windows_version"
+  local url="https://www.microsoft.com/en-us/evalcenter/download-$kubuntu_version"
 
   [[ "$DEBUG" == [Yy1]* ]] && echo "Parsing download page: ${url}"
   iso_download_page_html=$(curl --silent --max-time 30 --user-agent "$user_agent" --location --max-filesize 1M --fail --proto =https --tlsv1.2 --http1.1 -- "$url") || {
@@ -236,7 +207,7 @@ download_windows_eval() {
 
   if ! [ "$iso_download_page_html" ]; then
     # This should only happen if there's been some change to where this download page is located
-    error "Windows server download page gave us an empty response"
+    error "Kubuntu server download page gave us an empty response"
     return 1
   fi
 
@@ -329,8 +300,8 @@ getWindows() {
   esac
 
   case "${version,,}" in
-    "win10${PLATFORM,,}" | "win11${PLATFORM,,}" )
-      download_windows "$version" "$lang" "$edition" && return 0
+    "win10${PLATFORM,,}" | "k24.04${PLATFORM,,}" )
+      download_kubuntu "$version" "$lang" "$edition" && return 0
       ;;
     "win11${PLATFORM,,}-enterprise"* | "win10${PLATFORM,,}-enterprise"* )
       download_windows_eval "$version" "$lang" "$edition" && return 0
