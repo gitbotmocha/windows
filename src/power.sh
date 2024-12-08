@@ -30,12 +30,12 @@ boot() {
   if [ -s "$QEMU_PTY" ]; then
     if [ "$(stat -c%s "$QEMU_PTY")" -gt 7 ]; then
       local fail=""
-      if [[ "${BOOT_MODE,,}" == "windows_legacy" ]]; then
+      if [[ "${BOOT_MODE,,}" == "kubuntu_legacy" ]]; then
         grep -Fq "No bootable device." "$QEMU_PTY" && fail="y"
         grep -Fq "BOOTMGR is missing" "$QEMU_PTY" && fail="y"
       fi
       if [ -z "$fail" ]; then
-        info "Windows started succesfully, visit http://localhost:8006/ to view the screen..."
+        info "Kubuntu started succesfully, visit http://localhost:8006/ to view the screen..."
         return 0
       fi
     fi
@@ -52,10 +52,10 @@ boot() {
 
 ready() {
 
-  [ -f "$STORAGE/windows.boot" ] && return 0
+  [ -f "$STORAGE/kubuntu.boot" ] && return 0
   [ ! -s "$QEMU_PTY" ] && return 1
 
-  if [[ "${BOOT_MODE,,}" == "windows_legacy" ]]; then
+  if [[ "${BOOT_MODE,,}" == "kubuntu_legacy" ]]; then
     local last
     local bios="Booting from Hard"
     last=$(grep "^Booting.*" "$QEMU_PTY" | tail -1)
@@ -65,7 +65,7 @@ ready() {
     return 0
   fi
 
-  local line="\"Windows Boot Manager\""
+  local line="\"Kubuntu Boot Manager\""
   grep -Fq "$line" "$QEMU_PTY" && return 0
 
   return 1
@@ -81,7 +81,7 @@ finish() {
   if [ -s "$QEMU_PID" ]; then
 
     pid=$(<"$QEMU_PID")
-    error "Forcefully terminating Windows, reason: $reason..."
+    error "Forcefully terminating Kubuntu, reason: $reason..."
     { kill -15 "$pid" || true; } 2>/dev/null
 
     while isAlive "$pid"; do
@@ -94,7 +94,7 @@ finish() {
   if [ ! -f "$STORAGE/windows.boot" ] && [ -f "$BOOT" ]; then
     # Remove CD-ROM ISO after install
     if ready; then
-      touch "$STORAGE/windows.boot"
+      touch "$STORAGE/kubuntu.boot"
       if [[ "$REMOVE" != [Nn]* ]]; then
         rm -f "$BOOT" 2>/dev/null || true
       fi
@@ -183,7 +183,7 @@ _graceful_shutdown() {
   fi
 
   if ! ready; then
-    info "Cannot send ACPI signal during Windows setup, aborting..."
+    info "Cannot send ACPI signal during Kubuntu setup, aborting..."
     finish "$code" && return "$code"
   fi
 
