@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-: "${BOOT_MODE:="windows"}"
+: "${BOOT_MODE:="kubuntu"}"
 
-APP="Windows"
-SUPPORT="https://github.com/dockur/windows"
+APP="Kubuntu"
+SUPPORT="https://github.com/gitbotmocha/kubuntu"
 
 cd /run
 
