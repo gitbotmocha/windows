@@ -94,7 +94,7 @@ if ! smbd; then
   smbd -i --debug-stdout || true
 fi
 
-if [[ "${BOOT_MODE:-}" == "windows_legacy" ]]; then
+if [[ "${BOOT_MODE:-}" == "kubuntu_legacy" ]]; then
   # Enable NetBIOS on Windows 7 and lower
   if ! nmbd; then
     error "NetBIOS daemon failed to start!"
